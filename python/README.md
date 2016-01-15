@@ -1,5 +1,7 @@
 # A collection of python scripts
 
+Note: Only tested on Linux and Mac OS X.
+
 ## DMI forcast
 Computes the average parameter of an user defined interval,
 
