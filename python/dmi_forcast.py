@@ -1,3 +1,61 @@
+# dmi_forcast.py
+# Copyleft (C) 2016 Christian Brædstrup
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#
+# DESCRIPTION
+# ---------------
+# This script scrapes current forcast information
+# from the Danish Metrological Institute (DMI)
+# and allows the user to specify a time interval
+# to compute average parameters.
+#
+# SETUP
+#----------------
+# Adjust the param variable to one or several of your local forcast
+# locations. This involves changing the station name as needed (can be anything)
+# and the ID variable which should be 4500+<zipcode> (i.e. for 45008900 for Randers C)
+#
+# USAGE
+# ---------------
+#
+# python3 dmi_forcast.py <Start time> <Stop time> <parameter>
+#
+# EXAMPLE
+# --------------
+# Compute the average temperature on your commute to work
+# for the interval 6 - 9 AM
+#
+# python3 dmi_forcast.py 6 9 temp
+#
+# Possible parameters are temp, wind_speed, precip and wind_gust.
+#
+# If the current time is after the start time, but before the end time,
+# the average will be from current time until end time. Otherwise the next
+# possible time fitting the interval will be used (either on the current day or
+# the next day).
+#
+# NOTES
+# --------------
+# This script only works on Linux and Mac systems!
+#
+# Forcasts are only updated every hour. To spare the DMI servers station information is saved
+# to the /tmp folder. If the file is older than 1 hour it is updated.
+#
+# It is not possible to compute averages across day boundaries (i.e. from 23 - 03).
+# 
+
 import numpy as np
 import json
 import requests
@@ -29,10 +87,12 @@ def comidx(ct, st, et):
 
 dmiUrl = 'http://www.dmi.dk/Data4DmiDk/getData'
 
-# Params
+#
+# Params - Set before usage
+# 
 params     = {'dyssegaard' : {'by_hour':'true', 'id':'45002870', 'country':'DK'},
-              'farum'     : {'by_hour':'true', 'id':'45003520', 'country':'DK'},
-              'soborg'    : {'by_hour':'true', 'id':'45002860', 'country':'DK'},
+              'farum'      : {'by_hour':'true', 'id':'45003520', 'country':'DK'},
+              'soborg'     : {'by_hour':'true', 'id':'45002860', 'country':'DK'},
               'bagsvaerd'  : {'by_hour':'true', 'id':'45002880', 'country':'DK'}
               }
 
@@ -87,7 +147,6 @@ commuteweather = {'start'    : s,  # Morning commute starts 6 AM
 #                                'temp'     : 0.0 # Temperature
 #                                }}
 
-#for timeofday, weather in list(commuteweather.items()):
 for place, p in params.iteritems():
 
     # Spare the DMI servers and only update
@@ -110,7 +169,6 @@ for place, p in params.iteritems():
                 response = requests.get(dmiUrl, p)
                 data = json.loads(response.text.encode('utf8'))
                 f.write(response.text.encode('utf8'))
-#                print('Saving file %s' % place)
         except:
             exit
     else:
@@ -135,7 +193,6 @@ for place, p in params.iteritems():
         forcast = data['weather_data']['day2']
 
     for i in range(idx,idx+interval):
-#        print(forcast[i]['time_text'])
         if v == 'precip':
             commuteweather['var'] += float(forcast[i][v].replace(',', '.'))
         else:
