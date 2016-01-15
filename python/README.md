@@ -2,17 +2,17 @@
 
 Note: Only tested on Linux and Mac OS X.
 
-## DMI forcast
+## DMI forecast
 Computes the average parameter of an user defined interval,
 
 ```
-python3 dmi_forcast.py <start> <end> <parameter>
+python3 dmi_forecast.py <start> <end> <parameter>
 ```
 
-i.e. compute the average forcasted wind speed between 15:00 and 16:59,
+i.e. compute the average forecasted wind speed between 15:00 and 16:59,
 
 ```
-python3 dmi_forcast.py 15 17 wind_speed
+python3 dmi_forecast.py 15 17 wind_speed
 ```
 
 Possible parameters are temp, wind_speed, precip and wind_gust.
