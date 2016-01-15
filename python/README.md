@@ -1,5 +1,5 @@
 # A collection of python scripts
-1;95;0c
+
 ## DMI forcast
 Computes the average parameter of an user defined interval,
 
