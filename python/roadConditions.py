@@ -67,7 +67,6 @@ if os.path.isfile(outFile):
     if (time.time() - mt)/(60) >= N:
         updatefile = True
 else:
-    print('File does not exist')
     updatefile = True
 
 if True:
