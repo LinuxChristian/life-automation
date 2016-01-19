@@ -40,7 +40,7 @@ sensor #:
 
 sensor #:
   platform: command_sensor
-  name: Bike air temperature
-  command: "python3 <PATH TO SCRIPT>/roadConditions.py air"
+  name: Bike road surface temperature
+  command: "python3 <PATH TO SCRIPT>/roadConditions.py road"
   unit_of_measurement: "\u2103"
 ```
