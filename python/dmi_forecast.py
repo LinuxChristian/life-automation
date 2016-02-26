@@ -56,9 +56,12 @@
 # It is not possible to compute averages across day boundaries (i.e. from 23 - 03).
 # 
 
-import numpy as np
 import json
-import requests
+try:
+    from requests import get
+except ImportError:
+    raise ImportError("Could not load requests library.")
+
 import sys, os
 import time
 
@@ -147,11 +150,12 @@ commuteweather = {'start'    : s,  # Morning commute starts 6 AM
 #                                'temp'     : 0.0 # Temperature
 #                                }}
 
-for place, p in params.iteritems():
+for place, p in list(params.items()):
 
     # Spare the DMI servers and only update
     # once a hour
     updatefile = False
+    data = None
     if os.path.isfile('/tmp/%s.json' % place):
         mt = os.path.getmtime('/tmp/%s.json' % place)
 
@@ -164,20 +168,18 @@ for place, p in params.iteritems():
 
     if updatefile:
         # Get json from DMI
-        try:
-            with open(('/tmp/%s.json' % place), 'w') as f:
-                response = requests.get(dmiUrl, p)
-                data = json.loads(response.text.encode('utf8'))
-                f.write(response.text.encode('utf8'))
-        except:
-            exit
+        with open(('/tmp/%s.json' % place), 'w') as f:
+            response = get(dmiUrl, p)
+            data = response.json()
+            f.write(str(response.text))
+        if data is None:
+            raise IOError("Unable to read from DMI and store to disk.")
     else:
         # Get json from disk
-        try:
-            with open(('/tmp/%s.json' % place), 'r') as f:
-                data = json.loads(f.read())
-        except:
-            exit
+        with open(('/tmp/%s.json' % place), 'r') as f:
+            data = json.loads(f.read())
+        if data is None:
+            raise IOError("Unable to read data from disk.")
 
     forcast = data['weather_data']['day1'] # Get forcast for today
     currenttime = 24-len(forcast)          # 24 hourly forcast pr. day (00 - 23)
