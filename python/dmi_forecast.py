@@ -168,15 +168,15 @@ for place, p in list(params.items()):
 
     if updatefile:
         # Get json from DMI
-        with open(('/tmp/%s.json' % place), 'w') as f:
+        with open(('/tmp/%s.json' % place), 'w', encoding='utf-8') as f:
             response = get(dmiUrl, p)
             data = response.json()
-            f.write(str(response.text))
+            f.write(response.text)
         if data is None:
             raise IOError("Unable to read from DMI and store to disk.")
     else:
         # Get json from disk
-        with open(('/tmp/%s.json' % place), 'r') as f:
+        with open(('/tmp/%s.json' % place), 'r', encoding = 'utf-8') as f:
             data = json.loads(f.read())
         if data is None:
             raise IOError("Unable to read data from disk.")
