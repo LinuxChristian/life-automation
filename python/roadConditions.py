@@ -56,7 +56,7 @@ from urllib.request import urlopen
 N = 10 # minutes
 updatefile = False
 outFile = '/tmp/temperatures.point.json'
-trafikUrl = 'http://trafikkort.vejdirektoratet.dk/geojson/temperatures.point.json'
+trafikUrl = 'https://storage.googleapis.com/trafikkort-data/geojson/temperatures.point.json'
 
 # Spare the trafikken.dk servers and only update
 # once every N minutes
